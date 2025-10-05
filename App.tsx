@@ -3,6 +3,7 @@ import type { Game } from './types';
 import { GAMES } from './data/games';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
+import { OfferBanner } from './components/OfferBanner';
 import { FeaturedMods } from './components/FeaturedMods';
 import { TrendingRightNow } from './components/TrendingRightNow';
 import { AllGamesGrid } from './components/AllGamesGrid';
@@ -42,6 +43,7 @@ const App: React.FC = () => {
           games={GAMES.slice(0, 10)}
           onDownloadClick={handleDownloadClick}
         />
+        <OfferBanner />
         <AllGamesGrid
           allGames={filteredGames}
           onDownloadClick={handleDownloadClick}

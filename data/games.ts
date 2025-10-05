@@ -36,6 +36,10 @@ const GAME_TITLES = [
   "Dusttale",
   "Euro Truck Simulator 2 Mobile",
   "Homicipher Mobile",
+  "Dota 2",
+  "Carx street",
+  "Bowmaster",
+  "Hill climb racing 2",
 ];
 
 const CATEOGRIES = ["Racing", "Strategy", "RPG", "Action", "Simulation", "Puzzle", "Fighting", "Adventure"];
@@ -152,6 +156,18 @@ const generateRandomGame = (title: string, index: number): Game => {
   }
   if (title === "Homicipher Mobile") {
     coverUrl = "https://i.postimg.cc/cHCHQKDv/images-9.jpg";
+  }
+  if (title === "Dota 2") {
+    coverUrl = "https://i.postimg.cc/XvygHYYG/download-1.jpg";
+  }
+  if (title === "Carx street") {
+    coverUrl = "https://i.postimg.cc/cHPCDd6d/download.jpg";
+  }
+  if (title === "Bowmaster") {
+    coverUrl = "https://i.postimg.cc/FznZCd3C/download-2.jpg";
+  }
+  if (title === "Hill climb racing 2") {
+    coverUrl = "https://i.postimg.cc/dtYrv9tR/download-3.jpg";
   }
 
   return {
