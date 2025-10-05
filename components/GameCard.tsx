@@ -15,6 +15,14 @@ const formatSize = (mb: number) => {
     return `${Math.round(mb)} MB`;
 };
 
+const formatRatingCount = (count: number) => {
+    if (count >= 1000) {
+        return `${(count / 1000).toFixed(1)}k`;
+    }
+    return count;
+};
+
+
 export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, variant = 'full' }) => {
 
   if (variant === 'compact') {
@@ -39,7 +47,10 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, varia
                 <h3 className="text-white font-semibold text-xs leading-snug">{game.title}</h3>
                 <div className="flex items-center gap-1 mt-1">
                     <StarIcon className="w-3 h-3 text-yellow-400" />
-                    <span className="font-bold text-slate-300 text-[11px]">{(game.rating / 2).toFixed(1)}</span>
+                    <span className="font-bold text-slate-300 text-[11px]">
+                        {(game.rating / 2).toFixed(1)}
+                        <span className="text-slate-400 font-normal ml-1">({formatRatingCount(game.ratingCount)})</span>
+                    </span>
                 </div>
             </div>
         </a>

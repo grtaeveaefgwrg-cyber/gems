@@ -185,6 +185,7 @@ const generateRandomGame = (title: string, index: number): Game => {
     short_desc: "High-fidelity mobile gaming with realistic physics and stunning graphics.",
     size_mb: Math.floor(Math.random() * 2500) + 100,
     rating: rating,
+    ratingCount: Math.floor(Math.random() * 4950) + 50,
     categories: [CATEOGRIES[id % CATEOGRIES.length]],
     platforms: [PLATFORMS[id % PLATFORMS.length], PLATFORMS[(id + 1) % PLATFORMS.length]].filter((v,i,a) => a.indexOf(v)===i),
     tags: [TAGS[id % TAGS.length], TAGS[(id + 2) % TAGS.length]].filter((v,i,a) => a.indexOf(v)===i),

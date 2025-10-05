@@ -15,6 +15,7 @@ export interface Game {
   short_desc: string;
   size_mb: number;
   rating: number; // 0 to 10
+  ratingCount: number;
   categories: string[];
   platforms: string[];
   tags: string[];

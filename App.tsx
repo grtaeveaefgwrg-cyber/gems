@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import type { Game } from './types';
 import { GAMES } from './data/games';
 import { Header } from './components/Header';
@@ -14,6 +15,7 @@ import { DownloadModal } from './components/DownloadModal';
 import { AnimatedBackground } from './components/AnimatedBackground';
 
 const App: React.FC = () => {
+  const [games, setGames] = useState<Game[]>(GAMES);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -25,15 +27,36 @@ const App: React.FC = () => {
     setSelectedGame(null);
   };
 
+  const handleRateGame = (gameId: string, starRating: number) => {
+    setGames(prevGames =>
+      prevGames.map(game => {
+        if (game.id === gameId) {
+          const newRatingCount = game.ratingCount + 1;
+          // Convert 1-5 star rating to 0-10 scale for calculation
+          const newRatingOnScale = starRating * 2;
+          const newAverageRating =
+            (game.rating * game.ratingCount + newRatingOnScale) / newRatingCount;
+          
+          return {
+            ...game,
+            rating: newAverageRating,
+            ratingCount: newRatingCount,
+          };
+        }
+        return game;
+      })
+    );
+  };
+
   const filteredGames = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    if (!query) return GAMES;
-    return GAMES.filter(game =>
+    if (!query) return games;
+    return games.filter(game =>
       game.title.toLowerCase().includes(query) ||
       game.publisher.toLowerCase().includes(query) ||
       game.short_desc.toLowerCase().includes(query)
     );
-  }, [searchQuery]);
+  }, [searchQuery, games]);
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -43,7 +66,7 @@ const App: React.FC = () => {
         <main className="container mx-auto px-4">
           <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
           <FeaturedMods
-            games={GAMES.slice(0, 10)}
+            games={games.slice(0, 10)}
             onDownloadClick={handleDownloadClick}
           />
           <OfferBanner />
@@ -52,15 +75,22 @@ const App: React.FC = () => {
             onDownloadClick={handleDownloadClick}
           />
           <TrendingRightNow
-            games={GAMES.slice(10, 20)}
+            games={games.slice(10, 20)}
             onDownloadClick={handleDownloadClick}
           />
           <TrustBadges />
           <FAQ />
         </main>
         <Footer />
-        {selectedGame && <DownloadModal game={selectedGame} onClose={handleCloseModal} />}
       </div>
+      {selectedGame && createPortal(
+          <DownloadModal 
+            game={selectedGame} 
+            onClose={handleCloseModal} 
+            onRate={handleRateGame} 
+          />,
+          document.getElementById('modal-root')!
+        )}
     </div>
   );
 };

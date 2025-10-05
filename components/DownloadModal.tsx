@@ -1,7 +1,8 @@
 
+
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { Game, DownloadLink } from '../types';
-import { XMarkIcon, DownloadIcon, PlayIcon, GearIcon } from './icons';
+import { XMarkIcon, DownloadIcon, PlayIcon, GearIcon, StarIcon, CheckCircleIcon } from './icons';
 
 // Add locker script functions to the window object for TypeScript
 declare global {
@@ -38,9 +39,10 @@ const getCookie = (name: string): string | null => {
 interface DownloadModalProps {
   game: Game;
   onClose: () => void;
+  onRate: (gameId: string, rating: number) => void;
 }
 
-type ModalView = 'idle' | 'processing' | 'pending' | 'fallback';
+type ModalView = 'idle' | 'processing' | 'completed' | 'pending' | 'fallback';
 
 const installationSteps = [
   "Verifying device compatibility",
@@ -49,14 +51,16 @@ const installationSteps = [
   "Finalizing installation"
 ];
 
-export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) => {
+export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose, onRate }) => {
   const [view, setView] = useState<ModalView>('idle');
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
+  const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const targetLinkRef = useRef<DownloadLink | null>(null);
 
   // --- Dynamic Content Generation ---
-  const downloads = useMemo(() => `${(Math.floor(Math.random() * 850) + 100)}K+`, [game.id]);
+  const downloads = useMemo(() => game.title === 'Rocket league mobile' ? '572K+' : `${(Math.floor(Math.random() * 850) + 100)}K+`, [game.id, game.title]);
   
   const testimonials = useMemo(() => [
     { quote: "Script plugin works flawlessly! Unlocked everything right away, no issues at all.", user: "John" },
@@ -66,11 +70,15 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
   ], []);
 
   const testimonial = useMemo(() => {
+    if (game.title === 'Rocket league mobile') {
+        return testimonials[3]; // The "Chen" testimonial
+    }
     const index = (game.id.charCodeAt(game.id.length - 1) || 0) % testimonials.length;
     return testimonials[index];
-  }, [game.id, testimonials]);
+  }, [game.id, game.title, testimonials]);
 
-  const testimonialUsers = useMemo(() => `${(Math.floor(Math.random() * 150) + 10)}K`, [game.id]);
+  const testimonialUsers = useMemo(() => game.title === 'Rocket league mobile' ? '124K' : `${(Math.floor(Math.random() * 150) + 10)}K`, [game.id, game.title]);
+
 
   const handleEscape = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -108,13 +116,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
           if (p >= 100) {
             clearInterval(progressInterval);
             clearInterval(stepInterval);
-            // Animation finished, now trigger the locker
-            if (game.download_links.length > 0) {
-                handleDownloadClick(game.download_links[0]);
-            } else {
-                console.error("No download links available for this game.");
-                setView('fallback');
-            }
+            setView('completed');
             return 100;
           }
           return p + (100 / (totalDuration / 100));
@@ -126,7 +128,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
         clearInterval(progressInterval);
       };
     }
-  }, [view, game.download_links]);
+  }, [view]);
 
   const handleDownloadClick = (link: DownloadLink) => {
     targetLinkRef.current = link;
@@ -172,16 +174,24 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
     }
   };
 
-  const handlePrimaryAction = () => {
-    setView('processing');
-  };
+  const handleRatingSubmit = () => {
+    if (userRating > 0) {
+        onRate(game.id, userRating);
+    }
+    if (game.download_links.length > 0) {
+        handleDownloadClick(game.download_links[0]);
+    } else {
+        console.error("No download links available for this game.");
+        setView('fallback');
+    }
+  }
 
   const renderContent = () => {
     switch (view) {
       case 'idle':
         return (
           <>
-            <div className="h-40 bg-gradient-to-t from-red-900/80 to-red-600/50 rounded-t-2xl sm:rounded-t-lg relative flex items-center justify-center p-4">
+            <div className="h-40 bg-[#642831] rounded-t-lg relative flex items-center justify-center p-4">
                 <img src={game.cover_url} alt={`${game.title} Poster`} className="h-[120%] w-auto object-contain rounded-lg shadow-2xl max-w-[120px]"/>
                 <button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 bg-black/30 rounded-full p-1.5 text-white/80 hover:text-white hover:bg-black/50 transition-all">
                     <XMarkIcon className="w-5 h-5" />
@@ -193,14 +203,14 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
                     <DownloadIcon className="w-4 h-4" />
                     <span className="text-sm font-medium">{downloads} downloads</span>
                 </div>
-                <blockquote className="border-l-4 border-primary-500 bg-slate-800/50 p-4 rounded-r-lg">
+                <blockquote className="border-l-4 border-blue-400 bg-black/20 p-4">
                     <p className="text-slate-300 italic">"{testimonial.quote}"</p>
                     <cite className="text-slate-400 text-sm mt-2 block not-italic">- {testimonial.user}, {testimonialUsers} users</cite>
                 </blockquote>
                 <p className="text-slate-400 text-sm">{game.short_desc}</p>
                 <button
-                    onClick={handlePrimaryAction}
-                    className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-lg transition-colors duration-200">
+                    onClick={() => setView('processing')}
+                    className="w-full bg-[#5270a8] hover:bg-[#6889ca] text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-lg transition-colors duration-200">
                     <PlayIcon className="w-5 h-5" />
                     <span>Start the Installation</span>
                 </button>
@@ -238,6 +248,43 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
               </ul>
             </div>
           );
+        case 'completed':
+            return (
+                <div className="p-8 text-center flex flex-col items-center justify-center min-h-[400px]">
+                    <CheckCircleIcon className="w-16 h-16 text-accent-500 mb-4" />
+                    <h3 className="text-2xl font-bold text-white">Installation Complete!</h3>
+                    <p className="text-slate-400 mt-1 mb-6">Please rate your experience to continue.</p>
+                    
+                    <div 
+                        className="flex items-center justify-center gap-2 my-4"
+                        onMouseLeave={() => setHoverRating(0)}
+                    >
+                        {[...Array(5)].map((_, index) => {
+                            const ratingValue = index + 1;
+                            return (
+                                <button
+                                    key={ratingValue}
+                                    type="button"
+                                    aria-label={`Rate ${ratingValue} stars`}
+                                    onClick={() => setUserRating(ratingValue)}
+                                    onMouseEnter={() => setHoverRating(ratingValue)}
+                                    className="p-1 transition-transform duration-150 ease-in-out hover:scale-125 focus:outline-none"
+                                >
+                                    <StarIcon className={`w-8 h-8 transition-colors ${ratingValue <= (hoverRating || userRating) ? 'text-yellow-400' : 'text-slate-600'}`} />
+                                </button>
+                            );
+                        })}
+                    </div>
+                    
+                    <button
+                        onClick={handleRatingSubmit}
+                        disabled={userRating === 0}
+                        className="w-full bg-primary-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-lg transition-colors duration-200 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed hover:bg-primary-500 mt-4"
+                    >
+                        Submit & Continue
+                    </button>
+                </div>
+            );
       case 'pending':
         return (
           <div className="p-8 text-center flex flex-col items-center justify-center min-h-[400px]">
@@ -278,30 +325,24 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
 
   return (
     <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
         role="dialog" 
         aria-modal="true" 
         aria-labelledby="download-modal-title"
         onClick={onClose}
     >
       <div 
-        className="bg-[#101323] text-white w-full max-w-md rounded-t-2xl sm:rounded-2xl relative animate-slide-in-up"
+        className="bg-[#2a3045] text-white w-full max-w-md rounded-2xl relative animate-modal-enter"
         onClick={(e) => e.stopPropagation()}
       >
         {renderContent()}
       </div>
        <style>{`
-        @keyframes slide-in-up {
-          from { opacity: 0; transform: translateY(100%); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes modal-enter {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @media (min-width: 640px) {
-            @keyframes slide-in-up {
-                from { opacity: 0; transform: translateY(20px) scale(0.95); }
-                to { opacity: 1; transform: translateY(0) scale(1); }
-            }
-        }
-        .animate-slide-in-up { animation: slide-in-up 0.3s ease-out forwards; }
+        .animate-modal-enter { animation: modal-enter 0.3s ease-out forwards; }
       `}</style>
     </div>
   );

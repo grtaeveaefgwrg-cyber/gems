@@ -7,6 +7,13 @@ interface TrendingCardProps {
   onDownloadClick: (game: Game) => void;
 }
 
+const formatRatingCount = (count: number) => {
+    if (count >= 1000) {
+        return `${(count / 1000).toFixed(1)}k`;
+    }
+    return count;
+};
+
 export const TrendingCard: React.FC<TrendingCardProps> = ({ game, onDownloadClick }) => {
   return (
     <article className="h-full">
@@ -27,7 +34,10 @@ export const TrendingCard: React.FC<TrendingCardProps> = ({ game, onDownloadClic
           <h3 className="text-white font-semibold text-sm leading-tight">{game.title}</h3>
           <div className="flex items-center gap-1 mt-1">
             <StarIcon className="w-3.5 h-3.5 text-yellow-400" />
-            <span className="font-bold text-slate-300 text-xs">{(game.rating/2).toFixed(1)}</span>
+            <span className="font-bold text-slate-300 text-xs">
+                {(game.rating/2).toFixed(1)}
+                <span className="text-slate-400 font-normal ml-1">({formatRatingCount(game.ratingCount)})</span>
+            </span>
           </div>
           <p className="text-xs text-slate-400 mt-2 line-clamp-2">{game.short_desc}</p>
         </div>
