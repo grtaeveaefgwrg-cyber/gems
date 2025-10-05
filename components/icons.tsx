@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface IconProps {
@@ -95,5 +96,18 @@ export const SearchIcon: React.FC<IconProps> = ({ className }) => (
 export const UserCircleIcon: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
         <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clipRule="evenodd" />
+    </svg>
+);
+
+export const PlayIcon: React.FC<IconProps> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.647c1.295.748 1.295 2.539 0 3.286L7.279 20.99c-1.25.722-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+    </svg>
+);
+
+export const GearIcon: React.FC<IconProps> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <path d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z" />
+        <path d="M19.9,12.66l1.41-1.41a1,1,0,0,0-1.41-1.41L18.48,11.25a8,8,0,0,0-1.42-1.42l1.41-1.41a1,1,0,0,0-1.41-1.41L15.65,8.42a8,8,0,0,0-2-1.1L13.78,5a1,1,0,0,0-2,0L11.6,7.32a8,8,0,0,0-2,1.1L8.18,6.91a1,1,0,0,0-1.41,1.41l1.41,1.41a8,8,0,0,0-1.42,1.42L5.34,9.75a1,1,0,0,0-1.41,1.41l1.41,1.41a8.13,8.13,0,0,0,0,2.82L3.92,16.82a1,1,0,1,0,1.41,1.41l1.41-1.41a8,8,0,0,0,1.42,1.42l-1.41,1.41a1,1,0,1,0,1.41,1.41l1.41-1.41a8,8,0,0,0,2,1.1l.18,2.28a1,1,0,0,0,2,0l.18-2.28a8,8,0,0,0,2-1.1l1.41,1.41a1,1,0,0,0,1.41-1.41l-1.41-1.41a8,8,0,0,0,1.42-1.42l1.41,1.41a1,1,0,0,0,1.41-1.41l-1.41-1.41A8.13,8.13,0,0,0,19.9,12.66Zm-7.9,3.84a6,6,0,1,1,6-6A6,6,0,0,1,12,16.5Z" />
     </svg>
 );

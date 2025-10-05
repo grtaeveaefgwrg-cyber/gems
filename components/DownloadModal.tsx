@@ -1,7 +1,7 @@
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { Game, DownloadLink } from '../types';
-import { XMarkIcon, CheckCircleIcon } from './icons';
+import { XMarkIcon, DownloadIcon, PlayIcon, GearIcon } from './icons';
 
 // Add locker script functions to the window object for TypeScript
 declare global {
@@ -40,12 +40,37 @@ interface DownloadModalProps {
   onClose: () => void;
 }
 
-type LockerState = 'idle' | 'pending' | 'fallback';
+type ModalView = 'idle' | 'processing' | 'pending' | 'fallback';
+
+const installationSteps = [
+  "Verifying device compatibility",
+  "Downloading mod files",
+  "Applying modifications",
+  "Finalizing installation"
+];
 
 export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) => {
-  const [lockerState, setLockerState] = useState<LockerState>('idle');
-  // Use a ref to store the link, so we don't need to pass it to the global callback
+  const [view, setView] = useState<ModalView>('idle');
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const targetLinkRef = useRef<DownloadLink | null>(null);
+
+  // --- Dynamic Content Generation ---
+  const downloads = useMemo(() => `${(Math.floor(Math.random() * 850) + 100)}K+`, [game.id]);
+  
+  const testimonials = useMemo(() => [
+    { quote: "Script plugin works flawlessly! Unlocked everything right away, no issues at all.", user: "John" },
+    { quote: "Best mod I've ever used. The performance is amazing and it was super easy to install.", user: "Maria" },
+    { quote: "I was skeptical at first, but this is legit. The features are exactly as described.", user: "Alex" },
+    { quote: "Finally, a site that delivers what it promises. Highly recommended for all gamers!", user: "Chen" }
+  ], []);
+
+  const testimonial = useMemo(() => {
+    const index = (game.id.charCodeAt(game.id.length - 1) || 0) % testimonials.length;
+    return testimonials[index];
+  }, [game.id, testimonials]);
+
+  const testimonialUsers = useMemo(() => `${(Math.floor(Math.random() * 150) + 10)}K`, [game.id]);
 
   const handleEscape = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -55,51 +80,85 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
 
   useEffect(() => {
     document.addEventListener('keydown', handleEscape);
+    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      // Clean up global callback on unmount
+      document.body.style.overflow = '';
       if (window.onLockerComplete) {
         delete window.onLockerComplete;
       }
     };
   }, [handleEscape]);
 
+  // Effect for handling the processing animation
+  useEffect(() => {
+    if (view === 'processing') {
+      setProgress(0);
+      setCurrentStep(0);
+
+      const totalDuration = 5000; // 5 seconds for the animation
+      const stepDuration = totalDuration / installationSteps.length;
+
+      const stepInterval = setInterval(() => {
+        setCurrentStep(prev => Math.min(prev + 1, installationSteps.length));
+      }, stepDuration);
+
+      const progressInterval = setInterval(() => {
+        setProgress(p => {
+          if (p >= 100) {
+            clearInterval(progressInterval);
+            clearInterval(stepInterval);
+            // Animation finished, now trigger the locker
+            if (game.download_links.length > 0) {
+                handleDownloadClick(game.download_links[0]);
+            } else {
+                console.error("No download links available for this game.");
+                setView('fallback');
+            }
+            return 100;
+          }
+          return p + (100 / (totalDuration / 100));
+        });
+      }, 100);
+
+      return () => {
+        clearInterval(stepInterval);
+        clearInterval(progressInterval);
+      };
+    }
+  }, [view, game.download_links]);
+
   const handleDownloadClick = (link: DownloadLink) => {
     targetLinkRef.current = link;
     
-    // 1. Check for cookie to bypass locker
     if (getCookie('bg_locker_done')) {
       window.open(link.url, '_blank', 'noopener noreferrer nofollow');
       onClose();
       return;
     }
 
-    setLockerState('pending');
+    setView('pending');
 
-    // 2. Set up a timeout for fallback
     const fallbackTimeout = setTimeout(() => {
       console.warn('Locker timed out. Showing fallback.');
-      setLockerState('fallback');
+      setView('fallback');
       if (window.onLockerComplete) {
-        // Neutralize the callback to prevent it from firing after timeout
         window.onLockerComplete = () => {}; 
       }
-    }, 8000); // 8-second timeout
+    }, 8000);
 
-    // 3. Define the global callback for the locker script
     window.onLockerComplete = (success: boolean) => {
       clearTimeout(fallbackTimeout);
       if (success && targetLinkRef.current) {
-        setCookie('bg_locker_done', 'true', 1); // Set cookie for 1 day
+        setCookie('bg_locker_done', 'true', 1);
         window.open(targetLinkRef.current.url, '_blank', 'noopener noreferrer nofollow');
         onClose();
       } else {
         console.warn('Locker reported failure. Showing fallback.');
-        setLockerState('fallback');
+        setView('fallback');
       }
     };
 
-    // 4. Trigger the locker script
     try {
       if (typeof window._uj === 'function') {
         window._uj();
@@ -109,15 +168,79 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
     } catch (error) {
       console.error('Failed to trigger content locker:', error);
       clearTimeout(fallbackTimeout);
-      setLockerState('fallback');
+      setView('fallback');
     }
   };
 
+  const handlePrimaryAction = () => {
+    setView('processing');
+  };
+
   const renderContent = () => {
-    switch (lockerState) {
+    switch (view) {
+      case 'idle':
+        return (
+          <>
+            <div className="h-40 bg-gradient-to-t from-red-900/80 to-red-600/50 rounded-t-2xl sm:rounded-t-lg relative flex items-center justify-center p-4">
+                <img src={game.cover_url} alt={`${game.title} Poster`} className="h-[120%] w-auto object-contain rounded-lg shadow-2xl max-w-[120px]"/>
+                <button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 bg-black/30 rounded-full p-1.5 text-white/80 hover:text-white hover:bg-black/50 transition-all">
+                    <XMarkIcon className="w-5 h-5" />
+                </button>
+            </div>
+            <div className="p-6 pt-8 space-y-4">
+                <h2 id="download-modal-title" className="text-2xl font-bold text-white -mt-4">{game.title}</h2>
+                <div className="flex items-center gap-2 text-slate-400">
+                    <DownloadIcon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{downloads} downloads</span>
+                </div>
+                <blockquote className="border-l-4 border-primary-500 bg-slate-800/50 p-4 rounded-r-lg">
+                    <p className="text-slate-300 italic">"{testimonial.quote}"</p>
+                    <cite className="text-slate-400 text-sm mt-2 block not-italic">- {testimonial.user}, {testimonialUsers} users</cite>
+                </blockquote>
+                <p className="text-slate-400 text-sm">{game.short_desc}</p>
+                <button
+                    onClick={handlePrimaryAction}
+                    className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-lg transition-colors duration-200">
+                    <PlayIcon className="w-5 h-5" />
+                    <span>Start the Installation</span>
+                </button>
+            </div>
+          </>
+        );
+      case 'processing':
+          return (
+            <div className="p-8 text-center flex flex-col items-center justify-center min-h-[400px] sm:min-h-[500px]">
+              <div className="relative w-20 h-20 mb-6">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" stroke="#2c2f48" strokeWidth="8" fill="none" />
+                  <circle className="transform-gpu -rotate-90 origin-center" cx="50" cy="50" r="45" stroke="#4f46e5" strokeWidth="8" fill="none" strokeDasharray="283" strokeDashoffset="99.05" strokeLinecap="round" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <GearIcon className="w-10 h-10 text-slate-300" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white">Processing...</h3>
+              <p className="text-slate-400 mt-1 mb-6">Preparing installation for {game.title}</p>
+              <div className="w-full bg-slate-700/50 rounded-full h-1.5 my-2 overflow-hidden">
+                <div className="bg-primary-500 h-1.5 rounded-full transition-all duration-500 ease-linear" style={{ width: `${progress}%` }}></div>
+              </div>
+              <ul className="space-y-4 text-left w-full max-w-sm mt-6">
+                {installationSteps.map((step, index) => (
+                  <li key={step} className="flex items-center gap-4">
+                    <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${index <= currentStep ? 'bg-primary-600 text-white' : 'bg-slate-700 text-slate-400'} ${index === currentStep ? 'ring-4 ring-primary-500/30' : ''}`}>
+                      {index + 1}
+                    </div>
+                    <span className={`transition-colors duration-300 ${index === currentStep ? 'text-white font-medium' : 'text-slate-400'}`}>
+                      {step}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
       case 'pending':
         return (
-          <div className="text-center">
+          <div className="p-8 text-center flex flex-col items-center justify-center min-h-[400px]">
             <div className="flex justify-center items-center mb-4">
                <svg className="animate-spin h-12 w-12 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -125,96 +248,60 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ game, onClose }) =
               </svg>
             </div>
             <h3 className="text-xl font-bold">Waiting for completion...</h3>
-            <p className="text-slate-400 mt-2">Please complete the short offer in the new window to unlock your download.</p>
+            <p className="text-slate-400 mt-2 max-w-xs">Please complete the short offer in the new window to unlock your download.</p>
           </div>
         );
       case 'fallback':
         return (
-          <div>
-            <div className="text-center mb-6">
+           <div className="p-6 relative">
+             <button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 bg-slate-700/50 rounded-full p-1.5 text-slate-300 hover:text-white hover:bg-slate-600/50 transition-all">
+                <XMarkIcon className="w-5 h-5" />
+            </button>
+            <div className="text-center mb-6 mt-4">
                <h3 className="text-2xl font-bold">Verification Failed</h3>
                <p className="text-slate-400">The verification step could not be completed. You can try a direct link below.</p>
             </div>
             <div className="space-y-3">
               {game.download_links.map((link, index) => (
-                  <a
-                      key={index}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                      className="
-                        block w-full text-center text-white font-bold py-3 px-4 rounded-lg
-                        bg-accent-600 border-b-4 border-accent-800
-                        hover:bg-accent-500 hover:-translate-y-0.5
-                        active:border-b-2 active:translate-y-0.5
-                        transition-all duration-150 ease-in-out transform
-                      "
-                  >
+                  <a key={index} href={link.url} target="_blank" rel="noopener noreferrer nofollow"
+                      className="block w-full text-center text-white font-bold py-3 px-4 rounded-lg bg-accent-600 border-b-4 border-accent-800 hover:bg-accent-500 hover:-translate-y-0.5 active:border-b-2 active:translate-y-0.5 transition-all duration-150 ease-in-out transform">
                      {link.label} ({link.type})
                   </a>
               ))}
             </div>
           </div>
         );
-      case 'idle':
       default:
-        return (
-          <div>
-            <div className="text-center mb-6">
-               <CheckCircleIcon className="w-16 h-16 text-accent-500 mx-auto mb-3" />
-               <h3 className="text-2xl font-bold">Your Download is Ready!</h3>
-               <p className="text-slate-400">Please complete a short verification to unlock.</p>
-            </div>
-            <div className="space-y-3">
-              {game.download_links.map((link, index) => (
-                  <button
-                      key={index}
-                      onClick={() => handleDownloadClick(link)}
-                      className="
-                        block w-full text-center text-white font-bold py-3 px-4 rounded-lg
-                        bg-accent-600 border-b-4 border-accent-800
-                        hover:bg-accent-500 hover:-translate-y-0.5
-                        active:border-b-2 active:translate-y-0.5
-                        transition-all duration-150 ease-in-out transform
-                      "
-                  >
-                     {link.label} ({link.type})
-                  </button>
-              ))}
-            </div>
-            <p className="text-xs text-slate-500 mt-4 text-center">
-              You will be shown a short offer to unlock the download. We do not host copyrighted files. All links lead to third-party sources.
-            </p>
-          </div>
-        );
+        return null;
     }
-  };
+  }
 
   return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="download-modal-title">
-      <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-lg relative text-white animate-fade-in-up">
-        <div className="p-6 border-b border-slate-700 flex items-start justify-between">
-          <div>
-            <h2 id="download-modal-title" className="text-xl font-bold">Downloading {game.title}</h2>
-            <p className="text-sm text-slate-400">Version {game.id.split('-')[1]}.0</p>
-          </div>
-          <button onClick={onClose} aria-label="Close download dialog" className="text-slate-400 hover:text-white transition-colors">
-            <XMarkIcon className="w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="p-6">
-          {renderContent()}
-        </div>
+    <div 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" 
+        role="dialog" 
+        aria-modal="true" 
+        aria-labelledby="download-modal-title"
+        onClick={onClose}
+    >
+      <div 
+        className="bg-[#101323] text-white w-full max-w-md rounded-t-2xl sm:rounded-2xl relative animate-slide-in-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {renderContent()}
       </div>
        <style>{`
-        @keyframes fade-in-up {
-          from { opacity: 0; transform: translateY(20px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes slide-in-up {
+          from { opacity: 0; transform: translateY(100%); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in-up {
-          animation: fade-in-up 0.3s ease-out forwards;
+        @media (min-width: 640px) {
+            @keyframes slide-in-up {
+                from { opacity: 0; transform: translateY(20px) scale(0.95); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
         }
+        .animate-slide-in-up { animation: slide-in-up 0.3s ease-out forwards; }
       `}</style>
     </div>
   );
