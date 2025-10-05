@@ -13,9 +13,9 @@ export const TrendingCard: React.FC<TrendingCardProps> = ({ game, onDownloadClic
       <a 
         href="#download"
         onClick={(e) => { e.preventDefault(); onDownloadClick(game); }}
-        className="flex h-full bg-slate-800/50 rounded-2xl overflow-hidden ring-1 ring-white/10 p-3 gap-4 group"
+        className="flex h-full bg-slate-800/50 rounded-2xl overflow-hidden ring-1 ring-white/10 p-2.5 gap-3 group"
       >
-        <div className="flex-shrink-0 w-20 h-20 relative">
+        <div className="flex-shrink-0 w-16 h-16 relative">
           <img
             src={game.cover_url.replace('/533', '/400')}
             alt={game.title}
@@ -24,10 +24,10 @@ export const TrendingCard: React.FC<TrendingCardProps> = ({ game, onDownloadClic
           />
         </div>
         <div className="flex flex-col overflow-hidden">
-          <h3 className="text-white font-semibold text-base leading-tight">{game.title}</h3>
+          <h3 className="text-white font-semibold text-sm leading-tight">{game.title}</h3>
           <div className="flex items-center gap-1 mt-1">
-            <StarIcon className="w-4 h-4 text-yellow-400" />
-            <span className="font-bold text-slate-300 text-sm">{game.rating.toFixed(1)}</span>
+            <StarIcon className="w-3.5 h-3.5 text-yellow-400" />
+            <span className="font-bold text-slate-300 text-xs">{(game.rating/2).toFixed(1)}</span>
           </div>
           <p className="text-xs text-slate-400 mt-2 line-clamp-2">{game.short_desc}</p>
         </div>

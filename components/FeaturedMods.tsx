@@ -54,7 +54,7 @@ export const FeaturedMods: React.FC<FeaturedModsProps> = ({ games, onDownloadCli
               className="flex gap-4 overflow-x-auto pb-4 px-4 [--ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
                 {duplicatedGames.map((game, index) => (
-                    <div key={`${game.id}-${index}`} className="flex-shrink-0 w-28 sm:w-32">
+                    <div key={`${game.id}-${index}`} className="flex-shrink-0 w-24 sm:w-28">
                         <GameCard game={game} onDownloadClick={onDownloadClick} variant="compact" />
                     </div>
                 ))}

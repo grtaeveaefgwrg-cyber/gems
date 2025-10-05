@@ -33,11 +33,11 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, varia
                     loading="lazy"
                 />
             </div>
-            <div className="p-2.5">
-                <h3 className="text-white font-semibold text-xs leading-tight">{game.title}</h3>
+            <div className="p-2">
+                <h3 className="text-white font-semibold text-xs leading-snug">{game.title}</h3>
                 <div className="flex items-center gap-1 mt-1">
-                    <StarIcon className="w-3.5 h-3.5 text-yellow-400" />
-                    <span className="font-bold text-slate-300 text-xs">{game.rating.toFixed(1)}</span>
+                    <StarIcon className="w-3 h-3 text-yellow-400" />
+                    <span className="font-bold text-slate-300 text-[11px]">{(game.rating / 2).toFixed(1)}</span>
                 </div>
             </div>
         </a>
@@ -57,10 +57,10 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, varia
                 />
             </div>
         </a>
-      <div className="p-2.5 sm:p-3 flex flex-col flex-grow">
+      <div className="p-2 sm:p-2.5 flex flex-col flex-grow">
         <div className="flex items-start gap-2">
             <h3 className="text-white font-semibold text-sm leading-tight flex-grow">{game.title}</h3>
-            <CheckCircleIcon className="w-5 h-5 text-primary-500 flex-shrink-0 mt-px" />
+            <CheckCircleIcon className="w-4 h-4 text-primary-500 flex-shrink-0 mt-px" />
         </div>
         <p className="text-xs text-slate-400 mt-0.5">by {game.publisher}</p>
         <p className="text-xs text-slate-400 mt-1.5 line-clamp-2 min-h-[32px] flex-grow">{game.short_desc}</p>
@@ -72,20 +72,20 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, varia
               ))}
             </div>
             <div className="flex items-center gap-1 ml-1">
-              <StorageIcon className="w-4 h-4 text-primary-400" />
+              <StorageIcon className="w-3.5 h-3.5 text-primary-400" />
               <span className="font-semibold text-xs">{formatSize(game.size_mb)}</span>
             </div>
             <div className="flex items-center gap-1">
-                <StarIcon className="w-3.5 h-3.5 text-yellow-400" />
-                <span className="font-bold text-slate-300 text-sm">{game.rating.toFixed(1)}</span>
+                <StarIcon className="w-3 h-3 text-yellow-400" />
+                <span className="font-bold text-slate-300 text-xs">{(game.rating/2).toFixed(1)}</span>
             </div>
         </div>
 
         <button 
           onClick={() => onDownloadClick(game)}
-          className="mt-3 w-full bg-primary-600 text-white font-bold py-2.5 px-3 rounded-lg flex items-center justify-center gap-1.5 text-sm hover:bg-primary-500 transition-colors"
+          className="mt-3 w-full bg-primary-600 text-white font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 text-sm hover:bg-primary-500 transition-colors"
         >
-          <DownloadIcon className="w-4 h-4" />
+          <DownloadIcon className="w-3.5 h-3.5" />
           <span>Download</span>
         </button>
       </div>

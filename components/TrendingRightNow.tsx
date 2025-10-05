@@ -54,7 +54,7 @@ export const TrendingRightNow: React.FC<TrendingRightNowProps> = ({ games, onDow
               className="flex gap-4 overflow-x-auto pb-4 px-4 [--ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
                 {duplicatedGames.map((game, index) => (
-                    <div key={`${game.id}-${index}`} className="flex-shrink-0 w-80 sm:w-96">
+                    <div key={`${game.id}-${index}`} className="flex-shrink-0 w-72 sm:w-80">
                         <TrendingCard game={game} onDownloadClick={onDownloadClick} />
                     </div>
                 ))}
