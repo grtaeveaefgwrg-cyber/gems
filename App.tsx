@@ -11,6 +11,7 @@ import { TrustBadges } from './components/TrustBadges';
 import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
 import { DownloadModal } from './components/DownloadModal';
+import { AnimatedBackground } from './components/AnimatedBackground';
 
 const App: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
@@ -35,28 +36,31 @@ const App: React.FC = () => {
   }, [searchQuery]);
 
   return (
-    <div className="bg-slate-900 min-h-screen">
-      <Header />
-      <main className="container mx-auto px-4">
-        <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
-        <FeaturedMods
-          games={GAMES.slice(0, 10)}
-          onDownloadClick={handleDownloadClick}
-        />
-        <OfferBanner />
-        <AllGamesGrid
-          allGames={filteredGames}
-          onDownloadClick={handleDownloadClick}
-        />
-        <TrendingRightNow
-          games={GAMES.slice(10, 20)}
-          onDownloadClick={handleDownloadClick}
-        />
-        <TrustBadges />
-        <FAQ />
-      </main>
-      <Footer />
-      {selectedGame && <DownloadModal game={selectedGame} onClose={handleCloseModal} />}
+    <div className="min-h-screen relative overflow-x-hidden">
+      <AnimatedBackground />
+      <div className="relative z-10 bg-slate-900/80 backdrop-blur-[2px]">
+        <Header />
+        <main className="container mx-auto px-4">
+          <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
+          <FeaturedMods
+            games={GAMES.slice(0, 10)}
+            onDownloadClick={handleDownloadClick}
+          />
+          <OfferBanner />
+          <AllGamesGrid
+            allGames={filteredGames}
+            onDownloadClick={handleDownloadClick}
+          />
+          <TrendingRightNow
+            games={GAMES.slice(10, 20)}
+            onDownloadClick={handleDownloadClick}
+          />
+          <TrustBadges />
+          <FAQ />
+        </main>
+        <Footer />
+        {selectedGame && <DownloadModal game={selectedGame} onClose={handleCloseModal} />}
+      </div>
     </div>
   );
 };
