@@ -42,11 +42,9 @@ const GAME_TITLES = [
   "Hill climb racing 2",
   "SILENT HILL f Mobile",
   "Dying Light: The Beast Mobile",
-  "EA SPORTS Madden NFL 26 Mobile",
-  "Hollow Knight: Silksong Mobile",
-  "EA Sports FC 26 Mobile",
   "Borderlands 4 Mobile",
   "NBA 2K26 Mobile",
+  "Automobilista 2",
 ];
 
 const CATEOGRIES = ["Racing", "Strategy", "RPG", "Action", "Simulation", "Puzzle", "Fighting", "Adventure"];
@@ -175,6 +173,21 @@ const generateRandomGame = (title: string, index: number): Game => {
   }
   if (title === "Hill climb racing 2") {
     coverUrl = "https://i.postimg.cc/dtYrv9tR/download-3.jpg";
+  }
+  if (title === "SILENT HILL f Mobile") {
+    coverUrl = "https://i.postimg.cc/RVSRjbxr/download-4.jpg";
+  }
+  if (title === "Dying Light: The Beast Mobile") {
+    coverUrl = "https://i.postimg.cc/02C8Nj4L/download-5.jpg";
+  }
+  if (title === "Borderlands 4 Mobile") {
+    coverUrl = "https://i.postimg.cc/NFHWZs9t/download-7.jpg";
+  }
+  if (title === "NBA 2K26 Mobile") {
+    coverUrl = "https://i.postimg.cc/7Z6NLB9v/download-8.jpg";
+  }
+  if (title === "Automobilista 2") {
+    coverUrl = "https://i.postimg.cc/BZrpMcJc/images.jpg";
   }
 
   return {
