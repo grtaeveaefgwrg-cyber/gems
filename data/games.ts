@@ -40,6 +40,13 @@ const GAME_TITLES = [
   "Carx street",
   "Bowmaster",
   "Hill climb racing 2",
+  "SILENT HILL f Mobile",
+  "Dying Light: The Beast Mobile",
+  "EA SPORTS Madden NFL 26 Mobile",
+  "Hollow Knight: Silksong Mobile",
+  "EA Sports FC 26 Mobile",
+  "Borderlands 4 Mobile",
+  "NBA 2K26 Mobile",
 ];
 
 const CATEOGRIES = ["Racing", "Strategy", "RPG", "Action", "Simulation", "Puzzle", "Fighting", "Adventure"];

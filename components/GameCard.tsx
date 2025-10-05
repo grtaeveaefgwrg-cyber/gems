@@ -25,15 +25,17 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, varia
           onClick={(e) => { e.preventDefault(); onDownloadClick(game); }} 
           className="block group bg-slate-800/50 rounded-2xl overflow-hidden ring-1 ring-white/5 h-full"
         >
-            <div className="relative aspect-[3/4] overflow-hidden">
-                <img
-                    src={game.cover_url}
-                    alt={game.title}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                />
-            </div>
             <div className="p-2">
+                <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
+                    <img
+                        src={game.cover_url}
+                        alt={game.title}
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                    />
+                </div>
+            </div>
+            <div className="px-2 pb-2">
                 <h3 className="text-white font-semibold text-xs leading-snug">{game.title}</h3>
                 <div className="flex items-center gap-1 mt-1">
                     <StarIcon className="w-3 h-3 text-yellow-400" />
@@ -47,8 +49,8 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, varia
 
   return (
     <article className="bg-slate-800/50 rounded-2xl overflow-hidden flex flex-col ring-1 ring-white/5 h-full">
-        <a href="#download" onClick={(e) => { e.preventDefault(); onDownloadClick(game); }} className="block group">
-            <div className="relative aspect-square overflow-hidden">
+        <a href="#download" onClick={(e) => { e.preventDefault(); onDownloadClick(game); }} className="block group p-2 sm:p-2.5">
+            <div className="relative aspect-square overflow-hidden rounded-xl">
                 <img
                     src={game.cover_url.replace('/533', '/400')}
                     alt={game.title}
@@ -57,7 +59,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownloadClick, varia
                 />
             </div>
         </a>
-      <div className="p-2 sm:p-2.5 flex flex-col flex-grow">
+      <div className="p-2 sm:p-2.5 pt-0 flex flex-col flex-grow">
         <div className="flex items-start gap-2">
             <h3 className="text-white font-semibold text-sm leading-tight flex-grow">{game.title}</h3>
             <CheckCircleIcon className="w-4 h-4 text-primary-500 flex-shrink-0 mt-px" />
