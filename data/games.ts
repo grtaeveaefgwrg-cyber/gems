@@ -1,6 +1,7 @@
 import type { Game } from '../types';
 
 const GAME_TITLES = [
+  "Roblox mod",
   "Ride 5 mobile",
   "Sifu mobile",
   "Beamng drive mobile",
@@ -188,6 +189,9 @@ const generateRandomGame = (title: string, index: number): Game => {
   }
   if (title === "Automobilista 2") {
     coverUrl = "https://i.postimg.cc/BZrpMcJc/images.jpg";
+  }
+  if (title === "Roblox mod") {
+    coverUrl = "https://i.postimg.cc/HWMZ3KBQ/images.jpg";
   }
 
   return {
