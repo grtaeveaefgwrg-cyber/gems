@@ -6,7 +6,6 @@ import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
 import { OfferBanner } from './components/OfferBanner';
 import { FeaturedMods } from './components/FeaturedMods';
-import { TrendingRightNow } from './components/TrendingRightNow';
 import { AllGamesGrid } from './components/AllGamesGrid';
 import { TrustBadges } from './components/TrustBadges';
 import { FAQ } from './components/FAQ';
@@ -66,16 +65,12 @@ const App: React.FC = () => {
         <main className="container mx-auto px-4">
           <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
           <FeaturedMods
-            games={games.slice(0, 10)}
+            games={games}
             onDownloadClick={handleDownloadClick}
           />
           <OfferBanner />
           <AllGamesGrid
             allGames={filteredGames}
-            onDownloadClick={handleDownloadClick}
-          />
-          <TrendingRightNow
-            games={games.slice(10, 20)}
             onDownloadClick={handleDownloadClick}
           />
           <TrustBadges />
