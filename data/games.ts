@@ -1,10 +1,9 @@
-
 import type { Game } from '../types';
 
 const GAME_TITLES = [
   "Hay Day",
-  "DOP 5: Delete One Part mod",
-  "World War Heroes — WW2 PvP FPS",
+  "Bingo Blitz™ - Bingo Games",
+  "Masha and the Bear: My Friends mod",
   "Galaxy Piano: Scrolling Rush",
 ];
 
@@ -21,14 +20,11 @@ const generateRandomGame = (title: string, index: number): Game => {
   if (title === "GTA 5 Mobile") {
     coverUrl = "https://i.postimg.cc/vB3P70z8/say-what-you-want-about-the-game-but-i-think-gta-v-has-the-v0-dutadp6xzuta1.jpg";
   }
-  if (title === "DOP 5: Delete One Part mod") {
-    coverUrl = "https://i.postimg.cc/q7bZzG6d/unnamed.webp";
-  }
-  if (title === "World War Heroes — WW2 PvP FPS") {
-    coverUrl = "https://i.postimg.cc/mD3D8x7K/world-war-heroes-cover.jpg";
+  if (title === "Bingo Blitz™ - Bingo Games") {
+    coverUrl = "https://i.postimg.cc/K894NQk9/images-2.jpg";
   }
   if (title === "Galaxy Piano: Scrolling Rush") {
-    coverUrl = "https://i.postimg.cc/Qd1x0bZm/galaxy-piano-cover.webp";
+    coverUrl = "https://i.postimg.cc/m2j7vY1d/unnamed.png";
   }
   if (title === "The Last of Us 2 Mobile") {
     coverUrl = "https://i.postimg.cc/52k37Hd4/images-1.jpg";
@@ -148,7 +144,10 @@ const generateRandomGame = (title: string, index: number): Game => {
     coverUrl = "https://i.postimg.cc/BZrpMcJc/images.jpg";
   }
   if (title === "Hay Day") {
-    coverUrl = "https://i.postimg.cc/k4x1x2kY/hay-day-cover.jpg";
+    coverUrl = "https://i.postimg.cc/ryYy0z41/images-1.jpg";
+  }
+  if (title === "Masha and the Bear: My Friends mod") {
+    coverUrl = "https://i.postimg.cc/9Q9NPgnj/images-3.jpg";
   }
 
   return {
