@@ -1,11 +1,11 @@
+
 import type { Game } from '../types';
 
 const GAME_TITLES = [
-  "Roblox mod",
-  "Ride 5 mobile",
-  "Sifu mobile",
-  "Beamng drive mobile",
-  "Rooftops & alleys",
+  "Hay Day",
+  "DOP 5: Delete One Part mod",
+  "World War Heroes — WW2 PvP FPS",
+  "Galaxy Piano: Scrolling Rush",
 ];
 
 const CATEOGRIES = ["Racing", "Strategy", "RPG", "Action", "Simulation", "Puzzle", "Fighting", "Adventure"];
@@ -21,17 +21,14 @@ const generateRandomGame = (title: string, index: number): Game => {
   if (title === "GTA 5 Mobile") {
     coverUrl = "https://i.postimg.cc/vB3P70z8/say-what-you-want-about-the-game-but-i-think-gta-v-has-the-v0-dutadp6xzuta1.jpg";
   }
-  if (title === "Ride 5 mobile") {
-    coverUrl = "https://i.postimg.cc/Y9CcwGDR/download.jpg";
+  if (title === "DOP 5: Delete One Part mod") {
+    coverUrl = "https://i.postimg.cc/q7bZzG6d/unnamed.webp";
   }
-  if (title === "Sifu mobile") {
-    coverUrl = "https://i.postimg.cc/nrVwDyfK/images.jpg";
+  if (title === "World War Heroes — WW2 PvP FPS") {
+    coverUrl = "https://i.postimg.cc/mD3D8x7K/world-war-heroes-cover.jpg";
   }
-  if (title === "Rooftops & alleys") {
-    coverUrl = "https://i.postimg.cc/zfJDVfPX/header.jpg";
-  }
-  if (title === "Beamng drive mobile") {
-    coverUrl = "https://i.postimg.cc/3Ngm3Rcj/download.png";
+  if (title === "Galaxy Piano: Scrolling Rush") {
+    coverUrl = "https://i.postimg.cc/Qd1x0bZm/galaxy-piano-cover.webp";
   }
   if (title === "The Last of Us 2 Mobile") {
     coverUrl = "https://i.postimg.cc/52k37Hd4/images-1.jpg";
@@ -150,14 +147,14 @@ const generateRandomGame = (title: string, index: number): Game => {
   if (title === "Automobilista 2") {
     coverUrl = "https://i.postimg.cc/BZrpMcJc/images.jpg";
   }
-  if (title === "Roblox mod") {
-    coverUrl = "https://i.postimg.cc/HWMZ3KBQ/images.jpg";
+  if (title === "Hay Day") {
+    coverUrl = "https://i.postimg.cc/k4x1x2kY/hay-day-cover.jpg";
   }
 
   return {
     id: `uuid-${id}`,
     slug: slug,
-    title: title,
+    title: title.toLowerCase().includes('mod') ? title : `${title} Mod`,
     publisher: `Publisher ${String.fromCharCode(65 + (id % 10))}`,
     short_desc: "High-fidelity mobile gaming with realistic physics and stunning graphics.",
     size_mb: Math.floor(Math.random() * 2500) + 100,

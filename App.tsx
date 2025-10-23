@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import type { Game } from './types';
@@ -5,7 +6,6 @@ import { GAMES } from './data/games';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
 import { OfferBanner } from './components/OfferBanner';
-import { FeaturedMods } from './components/FeaturedMods';
 import { AllGamesGrid } from './components/AllGamesGrid';
 import { TrustBadges } from './components/TrustBadges';
 import { FAQ } from './components/FAQ';
@@ -64,10 +64,6 @@ const App: React.FC = () => {
         <Header />
         <main className="container mx-auto px-4">
           <SearchBar query={searchQuery} onQueryChange={setSearchQuery} />
-          <FeaturedMods
-            games={games}
-            onDownloadClick={handleDownloadClick}
-          />
           <OfferBanner />
           <AllGamesGrid
             allGames={filteredGames}
