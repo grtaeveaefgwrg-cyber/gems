@@ -156,12 +156,20 @@ const generateRandomGame = (title: string, index: number): Game => {
     coverUrl = "https://i.postimg.cc/9Q9NPgnj/images-3.jpg";
   }
 
+  let shortDesc = "High-fidelity mobile gaming with realistic physics and stunning graphics.";
+  if (title === "Fishing Clash") {
+    shortDesc = "Fishing Clash: Catching Fish Game (MOD, Big Combo) - a realistic fishing simulator in which you will have the opportunity to try your luck in various";
+  }
+  if (title === "Space shooter - Galaxy attac") {
+    shortDesc = "Space Shooter - Galaxy Attack (MOD, Unlimited Money) - is an impressive and exciting space scrolling shooter where you take on the role of defending Earth";
+  }
+
   return {
     id: `uuid-${id}`,
     slug: slug,
     title: title.toLowerCase().includes('mod') ? title : `${title} Mod`,
     publisher: `Publisher ${String.fromCharCode(65 + (id % 10))}`,
-    short_desc: "High-fidelity mobile gaming with realistic physics and stunning graphics.",
+    short_desc: shortDesc,
     size_mb: Math.floor(Math.random() * 2500) + 100,
     rating: rating,
     ratingCount: Math.floor(Math.random() * 4950) + 50,
