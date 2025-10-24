@@ -3,8 +3,8 @@ import type { Game } from '../types';
 const GAME_TITLES = [
   "Hay Day",
   "Bingo Blitz™ - Bingo Games",
-  "Masha and the Bear: My Friends mod",
-  "Galaxy Piano: Scrolling Rush",
+  "Fishing Clash",
+  "Space shooter - Galaxy attac",
 ];
 
 const CATEOGRIES = ["Racing", "Strategy", "RPG", "Action", "Simulation", "Puzzle", "Fighting", "Adventure"];
@@ -22,6 +22,12 @@ const generateRandomGame = (title: string, index: number): Game => {
   }
   if (title === "Bingo Blitz™ - Bingo Games") {
     coverUrl = "https://i.postimg.cc/K894NQk9/images-2.jpg";
+  }
+  if (title === "Fishing Clash") {
+    coverUrl = "https://i.postimg.cc/HkvPmqcR/images.jpg";
+  }
+  if (title === "Space shooter - Galaxy attac") {
+    coverUrl = "https://i.postimg.cc/SR5JkN44/images-1.jpg";
   }
   if (title === "Galaxy Piano: Scrolling Rush") {
     coverUrl = "https://i.postimg.cc/m2j7vY1d/unnamed.png";
